@@ -33,7 +33,7 @@ const print = (commands, ...templateData) => {
       action: (a, b) => {
         if (!(a && b)) return 'command "COMPARE" need two and more arguments'
   
-        return isDeepEqual(a, b) ? `${(formatToString(a))} and ${formatToString(b)} is equal` : `${(formatToString(a))} and ${formatToString(b)} is different`
+        return `${(formatToString(a))} and ${formatToString(b)} is ${isDeepEqual(a, b) ? 'equal' : 'different'}`
       }
     },
     unite: {
