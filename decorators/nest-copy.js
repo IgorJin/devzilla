@@ -26,24 +26,24 @@ function logger(suffix) {
         };
     };
 }
-var Main = /** @class */ (function () {
-    function Main(msg) {
-        this.msg = msg;
+var Main1 = /** @class */ (function () {
+    function Main1(msg) {
+        this.msg = msg + 'kis';
     }
-    Main.prototype.toUpper = function () { };
-    Main.prototype.say = function () {
+    Main1.prototype.toUpper = function () { };
+    Main1.prototype.say = function () {
         console.log("say", this.msg);
     };
     __decorate([
         logger("logger")
-    ], Main.prototype, "say", null);
-    Main = __decorate([
+    ], Main1.prototype, "say", null);
+    Main1 = __decorate([
         upper,
         subString(1, 3)
-    ], Main);
-    return Main;
+    ], Main1);
+    return Main1;
 }());
-var m = new Main("tom");
+var m = new Main1("tom");
 m.say();
 m.toUpper();
 m.say();
