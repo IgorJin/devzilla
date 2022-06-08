@@ -28,21 +28,21 @@ interface ClockInterface {
 
 @upper
 @subString(1, 3)
-class Main implements ClockInterface {
+class Main1 {
   toUpper() {}
   msg: any
   subString: any
   constructor(msg: any) {
-    this.msg = msg;
+    this.msg = msg+'kis';
   }
 
-  // @logger("logger")
+  @logger("logger")
   say() {
     console.log("say", this.msg);
   }
 }
 
-const m = new Main("tom");
+const m = new Main1("tom");
 m.say();
 m.toUpper();
 m.say();
