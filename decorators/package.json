@@ -4,13 +4,14 @@
   "description": "",
   "main": "1.js",
   "scripts": {
-    "nest": "tsc --target ES5 --experimentalDecorators && node nest-copy"
+    "nest": "nodemon --config nodemon.json nest-copy/index.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^17.0.41",
     "nodemon": "^2.0.16",
+    "reflect-metadata": "^0.1.13",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.3"
   }
