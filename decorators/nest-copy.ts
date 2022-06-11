@@ -1,50 +1,40 @@
-function upper(target: any) {
-  target.prototype.toUpper = function() {
-    this.msg = this.msg.toUpperCase();
-  };
+const http = require("http");
+
+async function bootstrap() {
+  const NestFactory = new NestFactoryStatic()
+  const app = await NestFactory.create(ApplicationModule);
+  await app.listen(3001, () => console.log('listening on http://localhost:3001'));
 }
+bootstrap();
 
-function subString(a: any, b: any) {
-  return function(target: any) {
-    target.prototype.subString = function() {
-      this.msg = this.msg.substring(a, b);
-    };
-  };
-}
+class NestFactoryStatic {
+  public async create(
+    module: any,
+  ) {
+    //new ExpressAdapter(httpServer)
+    const httpServer = http.createServer((req: any, res: any) => {
+      console.log('server started');
+    
+      res.setHeader("UserId", 12);
+      res.setHeader("Content-Type", "text/html; charset=utf-8;");
+      res.write("<h2>hello world</h2>");
+      res.end();
+    })
 
-function logger(suffix: any) {
-  return function(target: any, name: any, descriptor: any) {
-    const oldValue = descriptor.value;
-    descriptor.value = function() {
-      console.log("[" + suffix + "] " + new Date().toJSON() + " :");
-      oldValue.call(this);
-    };
-  };
-}
+    const applicationConfig = new ApplicationConfig();
+    const container = new NestContainer(applicationConfig);
+    this.setAbortOnError(serverOrOptions, options);
+    this.registerLoggerConfiguration(appOptions);
 
-interface ClockInterface {
-  msg: any
-}
+    await this.initialize(module, container, applicationConfig, httpServer);
 
-@upper
-@subString(1, 3)
-class Main1 {
-  toUpper() {}
-  msg: any
-  subString: any
-  constructor(msg: any) {
-    this.msg = msg+'kis';
-  }
-
-  @logger("logger")
-  say() {
-    console.log("say", this.msg);
+    const instance = new NestApplication(
+      container,
+      httpServer,
+      applicationConfig,
+      appOptions,
+    );
+    const target = this.createNestInstance(instance);
+    return this.createAdapterProxy<T>(target, httpServer);
   }
 }
-
-const m = new Main1("tom");
-m.say();
-m.toUpper();
-m.say();
-m.subString();
-m.say();
