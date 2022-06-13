@@ -1,13 +1,13 @@
-const PATH_METADATA = 'path'
 import 'reflect-metadata';
+
+const PATH_METADATA = 'path'
+const validPath = (path?: string) => path ? path.charAt(0) === '/' ? path : '/'+path : ''
 
 export function Controller() {
   const path = '/';
 
   return (target: object) => { // NOTE: target = class like AppController. save this in Reflect.
     Reflect.defineMetadata(PATH_METADATA, path, target);
-    // Reflect.defineMetadata(HOST_METADATA, host, target);
-    // Reflect.defineMetadata(SCOPE_OPTIONS_METADATA, scopeOptions, target);
     // Reflect.defineMetadata(VERSION_METADATA, versionOptions, target);
   };
 }
@@ -23,7 +23,20 @@ export function Module(metadata: any) {
 }
 
 export function Get(path?: any) {
-  return (target: any, name:any, descriptor:any) => {
-    return descriptor
+  return (target: any, name: any, descriptor:any) => {
+    return reflectMethodMetadata(descriptor, validPath(path), 'GET')
   }
+}
+
+export function Post(path?: any) {
+  return (target: any, name: any, descriptor:any) => {
+    return reflectMethodMetadata(descriptor, validPath(path), 'POST')
+  }
+}
+
+function reflectMethodMetadata(descriptor: any, path: any, method: any) {
+  Reflect.defineMetadata('method', method, descriptor.value);
+  Reflect.defineMetadata('path', validPath(path), descriptor.value);
+
+  return descriptor
 }
