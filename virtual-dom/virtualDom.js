@@ -1,19 +1,7 @@
 const $ = (selector) => document.querySelector(selector || '')
-const initialTree = {
-  tag: 'div', 
-  props: {
-    class: 'wrapper',
-    counter: 5
-  },
-  childrens: [{
-      tag: 'span',
-      childrens: ['Hello world! '],
-    }],
-}
 
 // functions
 function createVNode(tag = 'div', props , childrens = []) {
-  // validate
   return {
     tag,
     props,
@@ -27,34 +15,68 @@ const createDefaultRoot = () => {
   document.body.append(defaultRoot)
 } 
 
-function render(tree = {}, rootElement = createDefaultRoot()) {
-  function getNode(treeNode) {
-    const { tag, childrens, props } = treeNode
+function createRealDOMNode(treeNode) {
+  const { tag, props, childrens } = treeNode
 
-    if (!tag) {
-      return typeof treeNode === 'string' ? treeNode : JSON.stringify(treeNode)
-    }
-
-    const nodeEl = document.createElement(tag)
-
-    if (props) {
-        Object.entries(props).forEach(([k, v]) => nodeEl.setAttribute(k, v))
-    }
-
-    if (childrens && childrens.length) {
-      for (children of childrens) {
-        nodeEl.append(getNode(children))
-      }
-    }
-
-    return nodeEl
+  if (typeof treeNode === 'string') {
+    return document.createTextNode(treeNode);
   }
 
-  const node = getNode(tree)
+  if (typeof treeNode === 'function') {
+    return document.createTextNode(treeNode())
+  }
 
-  rootElement.append(node)
+  const nodeEl = document.createElement(tag)
+
+  if (props) {
+      Object.entries(props).forEach(([k, v]) => nodeEl.setAttribute(k, v))
+  }
+
+  if (childrens && childrens.length) {
+    for (children of childrens) {
+      nodeEl.appendChild(createRealDOMNode(children, props))
+    }
+  }
+
+  return nodeEl
 }
 
-// const newNode = createVNode('div', )
+function render(tree = {}, rootElement = createDefaultRoot()) {
+  const node = createRealDOMNode(tree)
 
-// appendVNode(virtualTree, newNode, )
+  rootElement.innerHTML = ''
+  rootElement.append(node)
+
+  return rootElement
+}
+
+function pathNode(node, vNode, nextVNode) {
+  console.log(node, vApp, nextApp)
+
+  if (!nextVNode) {
+    node.remove()
+    return
+  }
+
+  if (typeof vNode === "string" || typeof nextVNode === "string") {
+    if (vNode !== nextVNode) {
+      const nextNode = createRealDOMNode(nextVNode)
+      node.replaceWith(nextNode)
+      return nextNode
+    }
+
+    return node
+  }
+
+  if (vNode.tag !== nextVNode.tag) {
+    const nextNode = createRealDOMNode(nextVNode)
+    node.replaceWith(nextNode)
+    return nextNode
+  }
+
+  patchProps(node, vNode.props, nextVNode.props);
+
+  patchChildren(node, vNode.children, nextVNode.children);
+
+  return node
+}
