@@ -1,20 +1,4 @@
 // import { render, initialTree, $ } from './virtualDom
-// div.wrapper
-//  span Hello world! 
-//  span count: {{ counter }}
-//  span increment decrement
-
-// {
-//  tag: 'div', 
-//  attributes: { class: wrapper },
-//   props: {
-//     counter: 5
-//  },
-//  children: [{
-//     tag: span,
-//      textNode: 'Hello world! ',
-//   }],
-// }
 
 const testVNode = createVNode("div", { class: "container" }, [
   createVNode("h1", {}, ["Hello, Virtual DOM"]),
@@ -37,8 +21,17 @@ const virtualTree = createVNode("div", {class: 'wrapper'}, [
   ])
 ])
 
-const vNodeWithState = (state) => {
-  const { count } = state
+const store = {
+  state: { count: 0 },
+  handleStateChange: () => {},
+  setState(nextState) {
+    this.state = nextState
+    this.handleStateChange()
+  }
+}
+
+const createVApp = () => {
+  const { count } = store.state
 
   return createVNode("div", {class: 'wrapper'}, [
     createVNode("h1", {}, ["Hello, Virtual DOM"]),
@@ -55,20 +48,22 @@ const vNodeWithState = (state) => {
   ])
 }
 
-const state = { count: 5 }
+const state = { count: 0 }
 
-let vApp = vNodeWithState(state)
-let rootNode = render(vApp, $('#app'))
+let vApp = createVApp()
+let rootNode = mount(createRealDOMNode(vApp), $('#app'));
 
 setInterval(() => {
-  state.count++
+  if (store.state.count > 5) return
+  store.setState({ count: store.state.count + 1 })
 
   // new vitrual dome
-  const nextVApp = vNodeWithState(state)
+  const nextVApp = createVApp()
 
   // change real DOM
-  rootNode = pathNode(rootNode, vApp, nextVApp)
+  rootNode = patchNode(rootNode, vApp, nextVApp)
   
-  vApp = nextApp
+  vApp = nextVApp
+  console.log(state.count, " ================================================================")
 }, 1000)
 
