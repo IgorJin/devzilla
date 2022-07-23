@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<!-- template script -->
+<script type="text/template" id="ourTemplate">
+  <h1> Welcome to the <%= page.title %> Page</h1>
+  <h3> Please Visit our Friends: </h3><br>
+  <ul>  
+  <% for (var i=0; i < page.links.length; i++) { %>    
+  <li><%= page.links[i] %></li>  
+  <% } %>  
+  </ul>
+</script>
+
+<!-- parser -->
+<script >
+var template = document.getElementById('ourTemplate');
+var templateText = template.textContent;
+var render = Templater(templateText);
+function Templater(templateText) {
+  console.log(afterRend)
+  return new Function(
+    "page",
+    "var output=" +
+    JSON.stringify(templateText)
+    .replace(/<%=(.+?)%>/g, '"+($1)+"')
+    .replace(/<%(.+?)%>/g, '";$1\noutput+="') +
+    ";return output;"
+  );
+}
+var Page = {
+title: "Home",
+links: ['Google','CSS-Tricks','Codrops']
+}
+
+console.log(render(Page))
+document.body.innerHTML = render(Page);
+</script>
+</html>
