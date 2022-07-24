@@ -1,6 +1,7 @@
 const http = require("http");
 export const isFunction = (val: any): boolean => typeof val === 'function';
 export const isConstructor = (val: any): boolean => val === 'constructor';
+export const apiPrefix = '/api'
 
 interface InstaceInfo {
   method: string;
@@ -10,14 +11,10 @@ interface InstaceInfo {
 
 export class NestFactoryStatic {
   public async create(module: any) {
-    const apiPrefix = '/api'
-
-    //new ExpressAdapter(httpServer)
     const httpServer = http.createServer((req: any, response: any) => {
       console.log('server started');
       response.writeHead(200, {'Content-Type': 'text/html'})
       const { url, method: requestMethod } = req
-      
 
       if (url === '/') {
         response.write("<h2>hello world4</h2>");
